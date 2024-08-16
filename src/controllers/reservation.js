@@ -19,7 +19,13 @@ module.exports = {
                 </ul>
             `
         */
-    const data = await res.getModelList(Reservation);
+
+    let customFilter = {};
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      //* isAdmin ve isStaff değerlerinin ikisinin de false olması lazım
+      customFilter = { createdId: req.user._id };
+    }
+    const data = await res.getModelList(Reservation, customFilter);
 
     res.status(200).send({
       error: false,
