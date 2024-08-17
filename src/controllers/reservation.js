@@ -1,4 +1,5 @@
 "use strict";
+const { CustomError } = require("../errors/customError");
 /* -------------------------------------------------------
     NODEJS EXPRESS | CLARUSWAY FullStack Team
 ------------------------------------------------------- */
@@ -58,6 +59,13 @@ module.exports = {
             #swagger.tags = ["Reservations"]
             #swagger.summary = "Get Single Reservation"
         */
+
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      const checkData = await Reservation.findOne({ _id: req.params.id })
+      if (checkData.createdId != req.user._id) {
+        throw new CustomError("No Permisson! You must be admin or staff or own", 403)
+      }
+    }
     const data = await Reservation.findOne({ _id: req.params.id }).populate(
       "createdId"
     );
