@@ -19,6 +19,10 @@ module.exports = {
                 </ul>
             `
         */
+    let customFilter = {}
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      customFilter = { createdId: req.user._id }
+    }
     const data = await res.getModelList(Passenger);
 
     res.status(200).send({
@@ -52,6 +56,13 @@ module.exports = {
             #swagger.tags = ["Passengers"]
             #swagger.summary = "Get Single Passenger"
         */
+    //* isAdminOrStaffOrOwn
+    // if(!req.user.isAdmin && !req.user.isStaff) {
+    //   const checkData = await Passenger.findOne({_id:req.params.id})
+    //   if(checkData.createdId?.toString() !=  req.user._id.toString()) {
+    //     throw new CustomError("NoPermission!You must be admin or staff or own!")
+    //   }
+    // }
     const data = await Passenger.findOne({ _id: req.params.id }).populate(
       "createdId"
     );

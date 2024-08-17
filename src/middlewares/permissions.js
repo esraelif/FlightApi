@@ -59,4 +59,22 @@ module.exports = {
       );
     }
   },
+  isAdminOrStaffOrOwn: async (req, res, next) => {
+    //* User-Reservation-Passenger models
+
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      const checkData = await req.model.findOne({ _id: req.params.id });
+      if (
+        (checkData.createdId?.toString() || checkData._id?.toString()) !=
+        req.user._id.toString()
+      ) {
+        throw new CustomError(
+          "NoPermission! You must be admin or staff or own!",
+          403
+        );
+      }
+    }
+
+    next();
+  },
 };
